@@ -30,56 +30,19 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
   }
 
   String _parseUrl(String input) {
-    var url = input.trim();
+    // 从文本中提取第一个 URL
+    // 支持 http/https 开头的任意链接
+    final urlMatch = RegExp(r'https?://[^\s<>"{}|\\^`\[\]]+').firstMatch(input.trim());
     
-    // Bilibili 分享链接格式
-    // https://www.bilibili.com/video/BV1qdzSBiEUC/?share_source=copy_web&vd_source=ceab97b8a3a2bc63635daec4be4a3f53
-    if (url.contains('bilibili.com')) {
-      // 提取 BV 号
-      final bvMatch = RegExp(r'BV[\w]+').firstMatch(url);
-      if (bvMatch != null) {
-        url = 'https://www.bilibili.com/video/${bvMatch.group(0)}';
-      }
-      // 处理短链接 b23.tv
-      if (url.contains('b23.tv')) {
-        // 短链接需要重定向，暂时保留原链接
-      }
+    if (urlMatch != null) {
+      var url = urlMatch.group(0)!;
+      // 移除 URL 末尾可能存在的标点符号
+      url = url.replaceAll(RegExp(r'[.,;:)\]}>]+$'), '');
+      return url;
     }
     
-    // YouTube 分享链接格式
-    if (url.contains('youtube.com') || url.contains('youtu.be')) {
-      // 提取视频 ID
-      final ytMatch = RegExp(r'(?:v=|youtu\.be/)([\w-]{11})').firstMatch(url);
-      if (ytMatch != null) {
-        url = 'https://www.youtube.com/watch?v=${ytMatch.group(1)}';
-      }
-    }
-    
-    // 抖音分享链接
-    if (url.contains('douyin.com')) {
-      final dyMatch = RegExp(r'/video/(\d+)').firstMatch(url);
-      if (dyMatch != null) {
-        url = 'https://www.douyin.com/video/${dyMatch.group(1)}';
-      }
-    }
-    
-    // Twitter/X 分享链接
-    if (url.contains('twitter.com') || url.contains('x.com')) {
-      final twMatch = RegExp(r'/status/(\d+)').firstMatch(url);
-      if (twMatch != null) {
-        url = 'https://twitter.com/i/status/${twMatch.group(1)}';
-      }
-    }
-    
-    // TikTok 分享链接
-    if (url.contains('tiktok.com')) {
-      final ttMatch = RegExp(r'@([\w]+)/video/(\d+)').firstMatch(url);
-      if (ttMatch != null) {
-        url = 'https://www.tiktok.com/@${ttMatch.group(1)}/video/${ttMatch.group(2)}';
-      }
-    }
-    
-    return url;
+    // 如果没有提取到 URL，返回原文本
+    return input.trim();
   }
 
   void _startDownload(String url) {
@@ -89,13 +52,16 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
   }
 
   void _startBatchDownload() {
-    final urls = _batchUrlController.text
+    final lines = _batchUrlController.text
         .split('\n')
-        .where((url) => url.trim().isNotEmpty)
+        .where((line) => line.trim().isNotEmpty)
         .toList();
 
-    for (final url in urls) {
-      ref.read(downloadProvider.notifier).startDownload(url.trim());
+    for (final line in lines) {
+      final url = _parseUrl(line);
+      if (url.isNotEmpty) {
+        ref.read(downloadProvider.notifier).startDownload(url);
+      }
     }
 
     _batchUrlController.clear();
@@ -110,9 +76,12 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
         final file = File(path);
         try {
           final lines = await file.readAsLines();
-          for (final url in lines) {
-            if (url.trim().isNotEmpty) {
-              ref.read(downloadProvider.notifier).startDownload(url.trim());
+          for (final line in lines) {
+            if (line.trim().isNotEmpty) {
+              final url = _parseUrl(line);
+              if (url.isNotEmpty) {
+                ref.read(downloadProvider.notifier).startDownload(url);
+              }
             }
           }
         } catch (e) {
