@@ -29,7 +29,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('设置'),
+        title: const Text('璁剧疆'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -39,8 +39,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             colorScheme: colorScheme,
             icon: Icons.settings_input_component,
             iconColor: colorScheme.primary,
-            title: '环境配置',
-            subtitle: '配置必要的可执行文件',
+            title: '鐜閰嶇疆',
+            subtitle: '閰嶇疆蹇呰鐨勫彲鎵ц鏂囦欢',
             isExpanded: _envSectionExpanded,
             onToggle: () => setState(() => _envSectionExpanded = !_envSectionExpanded),
             child: _buildEnvironmentSection(settings, colorScheme),
@@ -51,8 +51,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             colorScheme: colorScheme,
             icon: Icons.cookie,
             iconColor: Colors.orange,
-            title: 'Cookies 配置',
-            subtitle: '用于访问需要登录的内容',
+            title: 'Cookies 閰嶇疆',
+            subtitle: '鐢ㄤ簬璁块棶闇€瑕佺櫥褰曠殑鍐呭',
             isExpanded: _cookieSectionExpanded,
             onToggle: () => setState(() => _cookieSectionExpanded = !_cookieSectionExpanded),
             child: _buildCookieSection(settings, colorScheme),
@@ -142,158 +142,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     );
   }
 
-  // ignore: unused_element
-  Widget _buildEnvSection(AppSettings settings, ColorScheme colorScheme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Card(
-          color: colorScheme.primaryContainer.withValues(alpha: 0.3),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              children: [
-                Icon(Icons.lightbulb_outline, color: colorScheme.primary, size: 20),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    '提示: 请选择 yt-dlp 和 ffmpeg 可执行文件',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        PathConfigCard(
-          title: "yt-dlp 执行文件",
-          description: "选择 yt-dlp 可执行文件",
-          currentPath: settings.ytDlpPath,
-          icon: Icons.play_arrow_rounded,
-          onTap: () => _selectFile(ref, 'yt-dlp'),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: TextButton.icon(
-            onPressed: () => _downloadTool('yt-dlp', context),
-            icon: const Icon(Icons.download, size: 18),
-            label: const Text("下载/更新 yt-dlp"),
-            style: TextButton.styleFrom(
-              foregroundColor: colorScheme.primary,
-            ),
-          ),
-        ),
-        if (_versions != null && _versions!.containsKey('yt-dlp') && !_versions!['yt-dlp'].toString().contains('error')) ...[
-          const SizedBox(height: 8),
-          _buildVersionInfo(context, 'yt-dlp', _versions!['yt-dlp']),
-        ],
-        const SizedBox(height: 12),
-        PathConfigCard(
-          title: "ffmpeg 执行文件",
-          description: "用于合并视频流和音频流",
-          currentPath: settings.ffmpegPath,
-          icon: Icons.movie_creation_outlined,
-          onTap: () => _selectFile(ref, 'ffmpeg'),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: TextButton.icon(
-            onPressed: () => _downloadTool('ffmpeg', context),
-            icon: const Icon(Icons.download, size: 18),
-            label: const Text("下载/更新 ffmpeg"),
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.purple,
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        PathConfigCard(
-          title: "aria2 执行文件 (可选)",
-          description: "多线程下载引擎",
-          currentPath: settings.aria2Path,
-          icon: Icons.speed,
-          onTap: () => _selectFile(ref, 'aria2'),
-          onClear: settings.aria2Path != null ? () => ref.read(appSettingsProvider.notifier).clearAria2Path() : null,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: TextButton.icon(
-            onPressed: () => _downloadTool('aria2', context),
-            icon: const Icon(Icons.download, size: 18),
-            label: const Text("下载/更新 aria2"),
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.teal,
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Card(
-          color: colorScheme.primaryContainer.withValues(alpha: 0.3),
-          child: InkWell(
-            onTap: _checkingVersions ? null : () => _checkVersions(ref),
-            borderRadius: BorderRadius.circular(16),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: _checkingVersions
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Icon(
-                            Icons.system_update,
-                            color: colorScheme.onPrimaryContainer,
-                            size: 22,
-                          ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '检查 yt-dlp 版本',
-                          style: TextStyle(
-                            fontFamily: 'Manrope',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                            color: colorScheme.onSurface,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          '检查 yt-dlp 是否有新版本',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildEnvironmentSection(AppSettings settings, ColorScheme colorScheme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,7 +156,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    '提示: 请先配置 yt-dlp、ffmpeg 和下载目录，aria2 为可选加速器。',
+                    '鎻愮ず: 璇峰厛閰嶇疆 yt-dlp銆乫fmpeg 鍜屼笅杞界洰褰曪紝aria2 涓哄彲閫夊姞閫熷櫒銆?,
                     style: TextStyle(
                       fontSize: 13,
                       color: colorScheme.onSurfaceVariant,
@@ -321,8 +169,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         ),
         const SizedBox(height: 16),
         PathConfigCard(
-          title: 'yt-dlp 可执行文件',
-          description: '选择 yt-dlp 可执行文件',
+          title: 'yt-dlp 鍙墽琛屾枃浠?,
+          description: '閫夋嫨 yt-dlp 鍙墽琛屾枃浠?,
           currentPath: settings.ytDlpPath,
           icon: Icons.play_arrow_rounded,
           onTap: () => _selectFile(ref, 'yt-dlp'),
@@ -332,7 +180,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           child: TextButton.icon(
             onPressed: () => _downloadTool('yt-dlp', context),
             icon: const Icon(Icons.download, size: 18),
-            label: const Text('下载/更新 yt-dlp'),
+            label: const Text('涓嬭浇/鏇存柊 yt-dlp'),
             style: TextButton.styleFrom(
               foregroundColor: colorScheme.primary,
             ),
@@ -344,8 +192,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         ],
         const SizedBox(height: 12),
         PathConfigCard(
-          title: 'ffmpeg 可执行文件',
-          description: '用于合并视频流和音频流',
+          title: 'ffmpeg 鍙墽琛屾枃浠?,
+          description: '鐢ㄤ簬鍚堝苟瑙嗛娴佸拰闊抽娴?,
           currentPath: settings.ffmpegPath,
           icon: Icons.movie_creation_outlined,
           onTap: () => _selectFile(ref, 'ffmpeg'),
@@ -355,7 +203,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           child: TextButton.icon(
             onPressed: () => _downloadTool('ffmpeg', context),
             icon: const Icon(Icons.download, size: 18),
-            label: const Text('下载/更新 ffmpeg'),
+            label: const Text('涓嬭浇/鏇存柊 ffmpeg'),
             style: TextButton.styleFrom(
               foregroundColor: Colors.purple,
             ),
@@ -367,8 +215,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         ],
         const SizedBox(height: 12),
         PathConfigCard(
-          title: 'aria2 可执行文件（可选）',
-          description: '多线程下载加速器',
+          title: 'aria2 鍙墽琛屾枃浠讹紙鍙€夛級',
+          description: '澶氱嚎绋嬩笅杞藉姞閫熷櫒',
           currentPath: settings.aria2Path,
           icon: Icons.speed,
           onTap: () => _selectFile(ref, 'aria2'),
@@ -381,7 +229,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           child: TextButton.icon(
             onPressed: () => _downloadTool('aria2', context),
             icon: const Icon(Icons.download, size: 18),
-            label: const Text('下载/更新 aria2'),
+            label: const Text('涓嬭浇/鏇存柊 aria2'),
             style: TextButton.styleFrom(
               foregroundColor: Colors.teal,
             ),
@@ -393,8 +241,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         ],
         const SizedBox(height: 12),
         PathConfigCard(
-          title: '下载目录',
-          description: '选择视频保存位置',
+          title: '涓嬭浇鐩綍',
+          description: '閫夋嫨瑙嗛淇濆瓨浣嶇疆',
           currentPath: settings.downloadPath,
           icon: Icons.folder_open,
           isDirectory: true,
@@ -435,7 +283,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '检查工具版本',
+                          '妫€鏌ュ伐鍏风増鏈?,
                           style: TextStyle(
                             fontFamily: 'Manrope',
                             fontWeight: FontWeight.w600,
@@ -445,7 +293,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          '检查 yt-dlp、ffmpeg、aria2 是否可用以及是否过旧',
+                          '妫€鏌?yt-dlp銆乫fmpeg銆乤ria2 鏄惁鍙敤浠ュ強鏄惁杩囨棫',
                           style: TextStyle(
                             fontSize: 13,
                             color: colorScheme.onSurfaceVariant,
@@ -556,10 +404,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final snackBar = SnackBar(
-      content: Text('请手动下载 $toolName: $url'),
+      content: Text('璇锋墜鍔ㄤ笅杞?$toolName: $url'),
       duration: const Duration(seconds: 5),
       action: SnackBarAction(
-        label: '复制',
+        label: '澶嶅埗',
         onPressed: () {
           Clipboard.setData(ClipboardData(text: url));
           Future.delayed(const Duration(seconds: 3), () {
@@ -585,7 +433,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Cookie 用于访问需要登录的内容，如会员视频',
+                    'Cookie 鐢ㄤ簬璁块棶闇€瑕佺櫥褰曠殑鍐呭锛屽浼氬憳瑙嗛',
                     style: TextStyle(
                       fontSize: 13,
                       color: colorScheme.onSurfaceVariant,
@@ -604,333 +452,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         _buildCustomCookiesPanel(settings, colorScheme),
       ],
     );
-  }
-
-  // ignore: unused_element
-  Widget _buildPlatformCookieCard(BuildContext context, WidgetRef ref, CookiePlatform platform, ColorScheme colorScheme) {
-    final cookieVersion = ref.watch(appSettingsProvider.select((settings) => settings.cookieVersion));
-    return FutureBuilder<bool>(
-      key: ValueKey('${platform.name}-$cookieVersion'),
-      future: ref.read(appSettingsProvider.notifier).hasCookieFile(platform),
-      builder: (context, snapshot) {
-        final hasCookie = snapshot.data == true;
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          child: InkWell(
-            onTap: () => _showAddCookieDialog(context, ref, platform),
-            borderRadius: BorderRadius.circular(16),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: hasCookie ? Colors.orange.withValues(alpha: 0.2) : colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      hasCookie ? Icons.check_circle : Icons.cookie,
-                      color: hasCookie ? Colors.orange : colorScheme.onSurfaceVariant,
-                      size: 22,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          platform.displayName,
-                          style: TextStyle(
-                            fontFamily: 'Manrope',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                            color: colorScheme.onSurface,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          hasCookie ? '已配置 Cookie' : '点击添加 Cookie',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (hasCookie)
-                    IconButton(
-                      icon: Icon(Icons.delete_outline, color: colorScheme.error),
-                      onPressed: () => _clearCookie(context, platform),
-                    ),
-                  Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  // ignore: unused_element
-  Widget _buildCustomCookiesSection(AppSettings settings, ColorScheme colorScheme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '自定义网站',
-          style: TextStyle(
-            fontFamily: 'Manrope',
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-            color: colorScheme.onSurface,
-          ),
-        ),
-        const SizedBox(height: 12),
-        ...settings.customCookies.map((cookie) => _buildCustomCookieItem(context, ref, cookie, colorScheme)),
-        const SizedBox(height: 8),
-        GestureDetector(
-          onTap: () => _showAddCustomCookieDialog(context),
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.add, color: colorScheme.primary, size: 20),
-                const SizedBox(width: 8),
-                Text(
-                  '添加自定义 Cookie',
-                  style: TextStyle(
-                    fontFamily: 'Manrope',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: colorScheme.primary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCustomCookieItem(BuildContext context, WidgetRef ref, CustomCookie cookie, ColorScheme colorScheme) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: Colors.orange.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(Icons.language, color: Colors.orange, size: 18),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  cookie.name,
-                  style: TextStyle(
-                    fontFamily: 'Manrope',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-                Text(
-                  cookie.domain,
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 12,
-                    color: colorScheme.primary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          IconButton(
-            icon: Icon(Icons.edit_outlined, color: colorScheme.primary, size: 20),
-            onPressed: () => _showEditCustomCookieDialog(context, ref, cookie),
-            tooltip: '编辑',
-          ),
-          IconButton(
-            icon: Icon(Icons.delete_outline, color: colorScheme.error, size: 20),
-            onPressed: () => _deleteCustomCookie(context, cookie),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _showAddCookieDialog(BuildContext context, WidgetRef ref, CookiePlatform platform) async {
-    final controller = TextEditingController();
-    final result = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text('添加 ${platform.displayName} Cookie'),
-        content: TextField(
-          controller: controller,
-          maxLines: 8,
-          decoration: InputDecoration(
-            hintText: '粘贴 Netscape 格式的 cookie...',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("取消"),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, controller.text),
-            child: const Text("保存"),
-          ),
-        ],
-      ),
-    );
-    if (result != null && result.isNotEmpty) {
-      await ref.read(appSettingsProvider.notifier).addCookie(platform, '', '手动添加', result);
-    }
-  }
-
-  Future<void> _clearCookie(BuildContext context, CookiePlatform platform) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text("确认清除"),
-        content: Text("确定要清除 ${platform.displayName} 的 Cookie 吗？"),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("取消")),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text("清除"),
-          ),
-        ],
-      ),
-    );
-    if (confirm == true) {
-      await ref.read(appSettingsProvider.notifier).clearCookie(platform);
-    }
-  }
-
-  Future<void> _showAddCustomCookieDialog(BuildContext context) async {
-    final nameController = TextEditingController();
-    final domainController = TextEditingController();
-    final cookieController = TextEditingController();
-    final result = await showDialog<Map<String, String>>(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('添加自定义 Cookie'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(controller: nameController, decoration: InputDecoration(labelText: '网站名称', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
-              const SizedBox(height: 12),
-              TextField(controller: domainController, decoration: InputDecoration(labelText: '网站域名', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
-              const SizedBox(height: 12),
-              TextField(controller: cookieController, maxLines: 5, decoration: InputDecoration(labelText: 'Cookie 内容', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)), alignLabelWithHint: true)),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("取消")),
-          FilledButton(
-            onPressed: () {
-              if (nameController.text.isEmpty || domainController.text.isEmpty || cookieController.text.isEmpty) return;
-              Navigator.pop(context, {'name': nameController.text, 'domain': domainController.text, 'cookie': cookieController.text});
-            },
-            child: const Text("保存"),
-          ),
-        ],
-      ),
-    );
-    if (result != null) {
-      await ref.read(appSettingsProvider.notifier).addCustomCookie(result['name']!, result['domain']!, '', result['cookie']!);
-    }
-  }
-
-  Future<void> _showEditCustomCookieDialog(BuildContext context, WidgetRef ref, CustomCookie cookie) async {
-    final nameController = TextEditingController(text: cookie.name);
-    final domainController = TextEditingController(text: cookie.domain);
-    final cookieController = TextEditingController(text: cookie.cookie);
-    final result = await showDialog<Map<String, String>>(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('编辑自定义 Cookie'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(controller: nameController, decoration: InputDecoration(labelText: '网站名称', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
-              const SizedBox(height: 12),
-              TextField(controller: domainController, decoration: InputDecoration(labelText: '网站域名', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
-              const SizedBox(height: 12),
-              TextField(controller: cookieController, maxLines: 5, decoration: InputDecoration(labelText: 'Cookie 内容', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)), alignLabelWithHint: true)),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("取消")),
-          FilledButton(
-            onPressed: () {
-              if (nameController.text.isEmpty || domainController.text.isEmpty || cookieController.text.isEmpty) return;
-              Navigator.pop(context, {'name': nameController.text, 'domain': domainController.text, 'cookie': cookieController.text});
-            },
-            child: const Text("保存"),
-          ),
-        ],
-      ),
-    );
-    if (result != null) {
-      await ref.read(appSettingsProvider.notifier).updateCustomCookie(cookie.id, result['name']!, result['domain']!, '', result['cookie']!);
-    }
-  }
-
-  Future<void> _deleteCustomCookie(BuildContext context, CustomCookie cookie) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text("确认删除"),
-        content: Text("确定要删除 ${cookie.name} 的 Cookie 吗？"),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("取消")),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text("删除"),
-          ),
-        ],
-      ),
-    );
-    if (confirm == true) {
-      await ref.read(appSettingsProvider.notifier).removeCustomCookie(cookie.id);
-    }
   }
 
   Widget _buildPlatformCookiePanel(
@@ -985,7 +506,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          hasCookie ? '已配置 Cookie' : '点击添加 Cookie',
+                          hasCookie ? '宸查厤缃?Cookie' : '鐐瑰嚮娣诲姞 Cookie',
                           style: TextStyle(
                             fontSize: 13,
                             color: colorScheme.onSurfaceVariant,
@@ -997,7 +518,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   if (hasCookie)
                     IconButton(
                       icon: Icon(Icons.delete_outline, color: colorScheme.error),
-                      tooltip: '清除 Cookie',
+                      tooltip: '娓呴櫎 Cookie',
                       onPressed: () => _clearCookieWithFeedback(context, ref, platform),
                     ),
                   Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
@@ -1015,7 +536,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '自定义网站',
+          '鑷畾涔夌綉绔?,
           style: TextStyle(
             fontFamily: 'Manrope',
             fontWeight: FontWeight.w600,
@@ -1042,7 +563,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 Icon(Icons.add, color: colorScheme.primary, size: 20),
                 const SizedBox(width: 8),
                 Text(
-                  '添加自定义 Cookie',
+                  '娣诲姞鑷畾涔?Cookie',
                   style: TextStyle(
                     fontFamily: 'Manrope',
                     fontWeight: FontWeight.w600,
@@ -1109,12 +630,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           ),
           IconButton(
             icon: Icon(Icons.edit_outlined, color: colorScheme.primary, size: 20),
-            tooltip: '编辑',
+            tooltip: '缂栬緫',
             onPressed: () => _showCustomCookieDialog(context, ref, existing: cookie),
           ),
           IconButton(
             icon: Icon(Icons.delete_outline, color: colorScheme.error, size: 20),
-            tooltip: '删除',
+            tooltip: '鍒犻櫎',
             onPressed: () => _deleteCustomCookieWithFeedback(context, ref, cookie),
           ),
         ],
@@ -1133,14 +654,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       builder: (dialogContext) => StatefulBuilder(
         builder: (dialogContext, setDialogState) => AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text('添加 ${platform.displayName} Cookie'),
+          title: Text('娣诲姞 ${platform.displayName} Cookie'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '支持粘贴 document.cookie 或 Netscape cookies.txt 内容。',
+                  '鏀寔绮樿创 document.cookie 鎴?Netscape cookies.txt 鍐呭銆?,
                   style: Theme.of(dialogContext).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 12),
@@ -1148,7 +669,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   controller: controller,
                   maxLines: 8,
                   decoration: InputDecoration(
-                    hintText: '例如: session=xxx; uid=123',
+                    hintText: '渚嬪: session=xxx; uid=123',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     alignLabelWithHint: true,
                   ),
@@ -1161,7 +682,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     setDialogState(() => controller.text = content);
                   },
                   icon: const Icon(Icons.upload_file),
-                  label: const Text('从文件导入'),
+                  label: const Text('浠庢枃浠跺鍏?),
                 ),
               ],
             ),
@@ -1169,11 +690,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('取消'),
+              child: const Text('鍙栨秷'),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(dialogContext, controller.text.trim()),
-              child: const Text('保存'),
+              child: const Text('淇濆瓨'),
             ),
           ],
         ),
@@ -1185,13 +706,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     await ref.read(appSettingsProvider.notifier).addCookie(
           platform,
           '',
-          '手动添加',
+          '鎵嬪姩娣诲姞',
           result,
         );
 
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${platform.displayName} Cookie 已保存')),
+        SnackBar(content: Text('${platform.displayName} Cookie 宸蹭繚瀛?)),
       );
     }
   }
@@ -1211,7 +732,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       builder: (dialogContext) => StatefulBuilder(
         builder: (dialogContext, setDialogState) => AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text(existing == null ? '添加自定义 Cookie' : '编辑自定义 Cookie'),
+          title: Text(existing == null ? '娣诲姞鑷畾涔?Cookie' : '缂栬緫鑷畾涔?Cookie'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -1219,7 +740,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 TextField(
                   controller: nameController,
                   decoration: InputDecoration(
-                    labelText: '网站名称',
+                    labelText: '缃戠珯鍚嶇О',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
@@ -1227,8 +748,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 TextField(
                   controller: domainController,
                   decoration: InputDecoration(
-                    labelText: '网站域名或 URL',
-                    hintText: '例如: example.com 或 https://example.com',
+                    labelText: '缃戠珯鍩熷悕鎴?URL',
+                    hintText: '渚嬪: example.com 鎴?https://example.com',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     errorText: errorText,
                   ),
@@ -1238,7 +759,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   controller: cookieController,
                   maxLines: 5,
                   decoration: InputDecoration(
-                    labelText: 'Cookie 内容',
+                    labelText: 'Cookie 鍐呭',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     alignLabelWithHint: true,
                   ),
@@ -1253,7 +774,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       setDialogState(() => cookieController.text = content);
                     },
                     icon: const Icon(Icons.upload_file),
-                    label: const Text('从文件导入'),
+                    label: const Text('浠庢枃浠跺鍏?),
                   ),
                 ),
               ],
@@ -1262,7 +783,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('取消'),
+              child: const Text('鍙栨秷'),
             ),
             FilledButton(
               onPressed: () {
@@ -1271,7 +792,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     normalizedDomain == null ||
                     cookieController.text.trim().isEmpty) {
                   setDialogState(() {
-                    errorText = normalizedDomain == null ? '请输入合法的域名或 URL' : null;
+                    errorText = normalizedDomain == null ? '璇疯緭鍏ュ悎娉曠殑鍩熷悕鎴?URL' : null;
                   });
                   return;
                 }
@@ -1282,7 +803,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   'cookie': cookieController.text.trim(),
                 });
               },
-              child: const Text('保存'),
+              child: const Text('淇濆瓨'),
             ),
           ],
         ),
@@ -1305,7 +826,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     }
 
     if (context.mounted) {
-      final label = existing == null ? '已保存' : '已更新';
+      final label = existing == null ? '宸蹭繚瀛? : '宸叉洿鏂?;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${result['name']} Cookie $label')),
       );
@@ -1321,17 +842,17 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('确认清除'),
-        content: Text('确定要清除 ${platform.displayName} 的 Cookie 吗？'),
+        title: const Text('纭娓呴櫎'),
+        content: Text('纭畾瑕佹竻闄?${platform.displayName} 鐨?Cookie 鍚楋紵'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('取消'),
+            child: const Text('鍙栨秷'),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialogContext, true),
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('清除'),
+            child: const Text('娓呴櫎'),
           ),
         ],
       ),
@@ -1342,7 +863,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     await ref.read(appSettingsProvider.notifier).clearCookie(platform);
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${platform.displayName} Cookie 已清除')),
+        SnackBar(content: Text('${platform.displayName} Cookie 宸叉竻闄?)),
       );
     }
   }
@@ -1356,17 +877,17 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('确认删除'),
-        content: Text('确定要删除 ${cookie.name} 的 Cookie 吗？'),
+        title: const Text('纭鍒犻櫎'),
+        content: Text('纭畾瑕佸垹闄?${cookie.name} 鐨?Cookie 鍚楋紵'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('取消'),
+            child: const Text('鍙栨秷'),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialogContext, true),
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('删除'),
+            child: const Text('鍒犻櫎'),
           ),
         ],
       ),
@@ -1377,7 +898,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     await ref.read(appSettingsProvider.notifier).removeCustomCookie(cookie.id);
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${cookie.name} Cookie 已删除')),
+        SnackBar(content: Text('${cookie.name} Cookie 宸插垹闄?)),
       );
     }
   }
@@ -1443,7 +964,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       });
       if (versions.containsKey('error')) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('版本检查失败，请检查配置路径')),
+          const SnackBar(content: Text('鐗堟湰妫€鏌ュけ璐ワ紝璇锋鏌ラ厤缃矾寰?)),
         );
         return;
       }
@@ -1454,8 +975,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(hasUpdate
-                ? "检测到 yt-dlp 已过期 $daysOld 天，建议更新！"
-                : "版本检查完成"),
+                ? "妫€娴嬪埌 yt-dlp 宸茶繃鏈?$daysOld 澶╋紝寤鸿鏇存柊锛?
+                : "鐗堟湰妫€鏌ュ畬鎴?),
             backgroundColor: hasUpdate ? Colors.orange : null,
           ),
         );
@@ -1464,48 +985,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       if (!mounted) return;
       setState(() => _checkingVersions = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('版本检查失败: $e')),
+        SnackBar(content: Text('鐗堟湰妫€鏌ュけ璐? $e')),
       );
     }
   }
 
-  // ignore: unused_element
-  Future<void> _updateFfmpeg(BuildContext context, WidgetRef ref) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final settings = ref.read(appSettingsProvider);
-    if (settings.ffmpegPath == null || settings.ffmpegPath!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('请先配置 ffmpeg 路径')),
-      );
-      return;
-    }
-
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('更新 ffmpeg'),
-        content: const Text('将打开 ffmpeg 下载页面。请手动下载并替换当前文件，然后重新启动应用。'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("取消")),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text("打开下载页面"),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm == true) {
-      final uri = Uri.parse('https://www.gyan.dev/ffmpeg/builds/');
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      } else {
-        if (mounted) {
-          messenger.showSnackBar(
-            const SnackBar(content: Text('无法打开下载页面')),
-          );
-        }
-      }
-    }
-  }
 }

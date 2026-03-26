@@ -33,6 +33,11 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Local release artifacts
+/release/*.exe
+/release/*.dll
+/release/data/
+
 # Windows build output
 windows-x64-*
 publish-v*
