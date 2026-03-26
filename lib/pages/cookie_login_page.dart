@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -87,16 +85,28 @@ class _CookieLoginPageState extends ConsumerState<CookieLoginPage> {
         return;
       }
 
-      final settings = ref.read(appSettingsProvider);
+      final notifier = ref.read(appSettingsProvider.notifier);
+      final platform = notifier.detectPlatform(_currentUrl);
       
-      final cookieFile = File('${settings.downloadPath}/cookies.txt');
-      await cookieFile.writeAsString(result);
+      if (platform == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('无法识别平台，请访问支持的网站')),
+          );
+        }
+        return;
+      }
       
-      await ref.read(appSettingsProvider.notifier).setCookiePath(cookieFile.path);
+      await notifier.addCookie(
+        platform,
+        platform.domain,
+        '在线登录导出',
+        result,
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Cookie 已保存到: ${cookieFile.path}')),
+          SnackBar(content: Text('${platform.displayName} Cookie 已保存')),
         );
         Navigator.of(context).pop();
       }

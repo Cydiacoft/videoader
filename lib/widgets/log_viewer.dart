@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/app_provider.dart';
+import '../theme/fluid_theme.dart';
 
 class LogViewer extends ConsumerStatefulWidget {
   const LogViewer({super.key});
@@ -29,111 +31,162 @@ class _LogViewerState extends ConsumerState<LogViewer> {
     }
   }
 
+  void _copyLogs(List<String> logs) {
+    final text = logs.join('\n');
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('日志已复制到剪贴板'),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        width: 200,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final logs = ref.watch(appLogsProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBottom();
     });
 
-    return Card(
-      color: isDark ? const Color(0xFF1E1E1E) : const Color(0xFF2B2B2B),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        child: logs.isEmpty
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(FluidSpacing.md),
+      child: logs.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.terminal,
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                    size: 36,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    "等待任务...",
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "日志将显示在这里",
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(
-                      Icons.terminal,
-                      color: Colors.grey[600],
-                      size: 36,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.expand_less,
+                          color: colorScheme.onSurfaceVariant,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '输出日志 (${logs.length} 条)',
+                          style: TextStyle(
+                            fontFamily: 'Manrope',
+                            color: colorScheme.onSurfaceVariant,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      "等待任务...",
-                      style: TextStyle(
-                        color: Colors.grey[500],
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "日志将显示在这里",
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                        fontSize: 12,
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.copy,
+                            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                            size: 16,
+                          ),
+                          onPressed: () => _copyLogs(logs),
+                          tooltip: '复制日志',
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(
+                            minWidth: 24,
+                            minHeight: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.terminal,
+                          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                          size: 16,
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '输出日志 (${logs.length} 条)',
-                        style: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Icon(
-                        Icons.terminal,
-                        color: Colors.grey[600],
-                        size: 16,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  const Divider(height: 1, color: Colors.white12),
-                  const SizedBox(height: 8),
-                  Expanded(
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      itemCount: logs.length,
-                      itemBuilder: (context, index) {
-                        final log = logs[index];
-                        Color textColor;
-                        
-                        if (log.contains('错误') || log.contains('失败') || log.contains('Error') || log.contains('failed') || log.contains('❌')) {
-                          textColor = const Color(0xFFFF5252);
-                        } else if (log.contains('完成') || log.contains('success') || log.contains('✅')) {
-                          textColor = const Color(0xFF69F0AE);
-                        } else if (log.contains('警告') || log.contains('Warning') || log.contains('warning') || log.contains('⚠️')) {
-                          textColor = const Color(0xFFFFD740);
-                        } else if (log.contains('🚀')) {
-                          textColor = const Color(0xFF40C4FF);
-                        } else {
-                          textColor = const Color(0xFFB0BEC5);
-                        }
+                const SizedBox(height: FluidSpacing.sm),
+                Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    itemCount: logs.length,
+                    itemBuilder: (context, index) {
+                      final log = logs[index];
+                      Color textColor;
 
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2),
-                          child: Text(
-                            log,
-                            style: TextStyle(
-                              color: textColor,
-                              fontFamily: 'monospace',
+                      if (log.contains('错误') ||
+                          log.contains('失败') ||
+                          log.contains('Error') ||
+                          log.contains('failed') ||
+                          log.contains('❌')) {
+                        textColor = FluidColors.error;
+                      } else if (log.contains('完成') ||
+                          log.contains('success') ||
+                          log.contains('✅')) {
+                        textColor = FluidColors.tertiary;
+                      } else if (log.contains('警告') ||
+                          log.contains('Warning') ||
+                          log.contains('warning') ||
+                          log.contains('⚠️')) {
+                        textColor = Colors.orange;
+                      } else if (log.contains('🚀')) {
+                        textColor = FluidColors.primary;
+                      } else {
+                        textColor = colorScheme.onSurfaceVariant;
+                      }
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Text(
+                          log,
+                          style: TextStyle(
+                            color: textColor,
+                            fontFamily: 'JetBrains Mono',
                               fontSize: 12,
-                              height: 1.4,
+                              height: 1.5,
                             ),
                           ),
                         );
                       },
                     ),
-                  ),
-                ],
-              ),
-      ),
+                ),
+              ],
+            ),
     );
   }
 }

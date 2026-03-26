@@ -2,8 +2,8 @@
 cmake_minimum_required(VERSION 3.14)
 project(videoder_demo LANGUAGES CXX)
 
-# Set Visual Studio platform toolset
-set(CMAKE_VS_PLATFORM_TOOLSET v142)
+# Set Visual Studio platform toolset - use VS 2026 toolset
+set(CMAKE_VS_PLATFORM_TOOLSET v180)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
